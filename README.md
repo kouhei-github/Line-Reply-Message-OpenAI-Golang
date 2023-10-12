@@ -56,6 +56,7 @@ docker compose down
 
 ## 3. 動作確認
 下記から公式アカウントを追加して動作確認してください。
+
 ![スクリーンショット 2023-10-12 9 22 15](https://github.com/kouhei-github/Line-Reply-Message-OpenAI-Golang/assets/49782052/6352a4b0-a852-4936-9035-f175804cc8e3)
 
 ---
