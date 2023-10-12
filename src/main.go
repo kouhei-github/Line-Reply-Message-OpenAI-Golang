@@ -6,6 +6,7 @@ import (
 	"net-http/myapp/route"
 	"net-http/myapp/utils/cors"
 	"net/http"
+	"os"
 )
 
 func main() {
@@ -20,8 +21,10 @@ func main() {
 
 	handler := corsOrigin.Handler(router.Mutex)
 	// Webサーバー起動時のエラーハンドリング => localhostの時コメントイン必要
-	if err := http.ListenAndServe(":8080", handler); err != nil {
-		panic(err)
+	if os.Getenv("ENVIRONMENT") == "local" {
+		if err := http.ListenAndServe(":8080", handler); err != nil {
+			panic(err)
+		}
 	}
 
 	// AWS Lambdaとの連携設定
