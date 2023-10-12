@@ -105,3 +105,4 @@ go.work
 
 .env
 src/.env
+.idea
