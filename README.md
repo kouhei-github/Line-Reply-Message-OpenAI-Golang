@@ -1,7 +1,7 @@
 # Line × OpenAi API × Golang
 質問やお悩み相談が来た際に、GPTエンジンを使用して、<br>
 完璧な返答をするLINE公式アカウント用のバックエンドアプリを作成しました。
-<div style="width:700px;height:1400px">
+<div style="width:500px;height:1000px">
 ![385544301_628796422781454_6186934858729003709_n](https://github.com/kouhei-github/Line-Reply-Message-OpenAI-Golang/assets/49782052/2625b4fc-f7da-4d05-865f-297760a2d866)
 </div>
 
