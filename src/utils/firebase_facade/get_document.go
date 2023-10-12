@@ -1,6 +1,7 @@
 package firebase_facade
 
 import (
+	"cloud.google.com/go/firestore"
 	"errors"
 	"google.golang.org/api/iterator"
 	"log"
@@ -18,7 +19,7 @@ type Talk struct {
 // また、3日以前のメッセージは削除します
 func (store *MyFireStore) GetDocs(target string) []Talk {
 	// アプリケーションのユーザーコレクションに対するイテレータを作成
-	iter := store.App.Collection("users").Doc(target).Collection("messages").Documents(store.Ctx)
+	iter := store.App.Collection("users").Doc(target).Collection("messages").OrderBy("CreatedAt", firestore.Desc).Documents(store.Ctx)
 	var result []Talk
 
 	for {
@@ -31,14 +32,13 @@ func (store *MyFireStore) GetDocs(target string) []Talk {
 			log.Fatalf("Failed to iterate: %v", err)
 		}
 
-		talk := castArrayString(doc.Data())             // ドキュメントのデータをTalkに変換
-		threeDaysBefore := time.Now().AddDate(0, 0, -3) // 3日前の日付を計算
+		talk := castArrayString(doc.Data())                   // ドキュメントのデータをTalkに変換
+		fiveMinutesBefore := time.Now().Add(-5 * time.Minute) // 5分前
 
 		compare := time.Date(talk.CreatedAt.Year(), talk.CreatedAt.Month(), talk.CreatedAt.Day(), 0, 0, 0, 0, talk.CreatedAt.Location())
-		threeDaysBefore = time.Date(threeDaysBefore.Year(), threeDaysBefore.Month(), threeDaysBefore.Day(), 0, 0, 0, 0, threeDaysBefore.Location())
-
-		// メッセージの作成日が3日以前であれば削除
-		if compare.Before(threeDaysBefore) {
+		fiveMinutesBefore = time.Date(fiveMinutesBefore.Year(), fiveMinutesBefore.Month(), fiveMinutesBefore.Day(), 0, 0, 0, 0, fiveMinutesBefore.Location())
+		// メッセージの作成日が5分前であれば削除
+		if compare.Before(fiveMinutesBefore) {
 			store.App.Collection("users").Doc(target).Collection("messages").Doc(doc.Ref.ID).Delete(store.Ctx)
 		} else {
 			// 結果のスライスに追加

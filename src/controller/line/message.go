@@ -59,18 +59,7 @@ func MessageHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(err.Error())
 	}
 
-	// Firebaseへのメッセージを作成します
-	fireBaseMessage := firebase_facade.Message{
-		Text:      userInputMessage,
-		CreatedAt: time.Now(),
-		ChatUser: firebase_facade.User{
-			Name: profileRes.DisplayName,
-			Id:   userLineId, // TODO lineのユーザーID
-		},
-	}
-	// メッセージをFirebaseに追加します
-	err = fireStore.AddDoc(userLineId, fireBaseMessage)
-	// TODO firebaseからデータを全て取得
+	// firebaseからデータを全て取得
 	talks := fireStore.GetDocs(userLineId)
 	var messages []openai.ChatCompletionMessage
 	// Firebaseから取得した全てのトークをOpenAIのメッセージフォーマットに変換します
@@ -86,7 +75,24 @@ func MessageHandler(w http.ResponseWriter, r *http.Request) {
 		messages = append(messages, chat)
 	}
 
-	// TODO openaiでの会話の生成
+	messages = append(messages, openai.ChatCompletionMessage{
+		Role:    openai.ChatMessageRoleUser,
+		Content: userInputMessage,
+	})
+
+	// Firebaseへのメッセージを作成します
+	fireBaseMessage := firebase_facade.Message{
+		Text:      userInputMessage,
+		CreatedAt: time.Now(),
+		ChatUser: firebase_facade.User{
+			Name: profileRes.DisplayName,
+			Id:   userLineId, // lineのユーザーID
+		},
+	}
+	// ユーザーのメッセージをFirebaseに追加します
+	err = fireStore.AddDoc(userLineId, fireBaseMessage)
+
+	// openaiでの会話の生成
 	answer, err := utils.SendToGPT(os.Getenv("OPENAI_API_KEY"), messages)
 	if err != nil {
 		w.WriteHeader(500)

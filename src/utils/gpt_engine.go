@@ -15,8 +15,9 @@ func SendToGPT(token string, messages []openai.ChatCompletionMessage) (string, e
 	resp, err := client.CreateChatCompletion(
 		context.Background(),
 		openai.ChatCompletionRequest{
-			Model:    openai.GPT3Dot5Turbo,
-			Messages: messages,
+			Model:     openai.GPT3Dot5Turbo,
+			Messages:  messages,
+			MaxTokens: 600,
 		},
 	)
 
