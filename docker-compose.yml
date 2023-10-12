@@ -1,0 +1,21 @@
+version: '3'
+services:
+  go:
+    image: line-fortune-telling-image
+    container_name: line-fortune-telling-container
+    build:
+      context: .
+      dockerfile: ./container/Dockerfile
+    command: ${GOLANG_COMMAND}
+    stdin_open: true
+    tty: true
+    working_dir: /app
+    volumes:
+      - ./src:/app
+    environment:
+      TZ: Asia/Tokyo
+    env_file:
+      - .env
+    ports:
+      - ${GOLANG_PORT}
+      - ${AIR_TOML_PORT}
