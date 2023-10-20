@@ -18,6 +18,9 @@ func (router *Router) GetRouter() {
 	// line-web-hook
 	router.Mutex.HandleFunc("/api/v1/webhook", line.MessageHandler)
 
+	// test
+	router.Mutex.HandleFunc("/api/v1/body/test", controller.BodyTestHandler)
+
 	// 記事をDBに保存
 
 	// 人気の記事一覧
